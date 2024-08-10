@@ -5,7 +5,7 @@ namespace CommandsService.Data
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<DbContext> dbContextOptions) : base(dbContextOptions)
+        public AppDbContext(DbContextOptions<AppDbContext> dbContextOptions) : base(dbContextOptions)
         {
 
         }
