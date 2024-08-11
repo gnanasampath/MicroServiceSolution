@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using PlatformService.Data;
-using PlatformService.SynDataServices.Http;
-using Microsoft.Extensions.Configuration.Json;
+using PlatformService.SyncDataServices.Http;
 using PlatformService.AsyncDataServices;
+using PlatformService.SyncDataServices.Grpc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 if (builder.Environment.IsProduction())
 {
     Console.WriteLine("Using SQL Server");
-    builder.Services.AddDbContext<AppDbContext>(opt=>opt.UseSqlServer(builder.Configuration.GetConnectionString("PlatformsConn")));
+    builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("PlatformsConn")));
 }
 else
 {
@@ -25,10 +25,11 @@ builder.Services.AddScoped<IPlatformRepository, PlatformRepository>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
 builder.Services.AddSingleton<IMessageBusClient, MessageBusClient>();
+builder.Services.AddGrpc();
 
 var app = builder.Build();
 
-PrepDb.PrepPopulation(app ,builder.Environment.IsProduction());
+PrepDb.PrepPopulation(app, builder.Environment.IsProduction());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -42,5 +43,12 @@ Console.WriteLine($"--> Custom Servie endpoint {app.Configuration["CommandServic
 app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
+app.MapGrpcService<GrpcPlatformService>();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGet("/protos/platforms.proto", async context =>
+    await context.Response.WriteAsync(System.IO.File.ReadAllText("Protos/platforms.proto")));
+});
+
 app.Run();
 

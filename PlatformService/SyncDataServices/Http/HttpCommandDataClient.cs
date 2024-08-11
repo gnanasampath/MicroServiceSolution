@@ -1,15 +1,15 @@
+using PlatformService.Dtos;
 using System.Text;
 using System.Text.Json;
-using PlatformService.Dtos;
 
-namespace PlatformService.SynDataServices.Http
+namespace PlatformService.SyncDataServices.Http
 {
     public class HttpCommandDataClient : ICommandDataClient
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
 
-        public HttpCommandDataClient(HttpClient httpClient,IConfiguration configuration)
+        public HttpCommandDataClient(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _configuration = configuration;

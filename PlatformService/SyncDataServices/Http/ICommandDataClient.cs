@@ -1,9 +1,9 @@
 using PlatformService.Dtos;
 
-namespace PlatformService.SynDataServices.Http
+namespace PlatformService.SyncDataServices.Http
 {
-public interface ICommandDataClient
-{
-        Task SendPlatformToCommand(PlatformReadDto plat);
-}
+        public interface ICommandDataClient
+        {
+                Task SendPlatformToCommand(PlatformReadDto plat);
+        }
 }
